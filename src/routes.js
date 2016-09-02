@@ -6,7 +6,7 @@ import App from './containers/App';
 import store from './store/configureStore';
 
 let routes = (
-  <Route path="/internations" component={App}/>
+  <Route path="/" component={App}/>
 );
 
 function patchRoutes(route, store) {
