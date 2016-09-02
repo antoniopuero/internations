@@ -15,6 +15,11 @@ class App extends Component {
     showLeftNav: false
   };
 
+  static onEnter(store, nextState, replaceState, callback) {
+    console.log('here');
+    callback();
+  }
+
   handleToggle () {
     this.setState({showLeftNav: !this.state.showLeftNav});
   }
@@ -32,7 +37,6 @@ class App extends Component {
           onLeftIconButtonTouchTap={this.handleToggle.bind(this)}
         />
         <Drawer
-          style={{marginTop: '40px'}}
           open={this.state.showLeftNav}
         >
           <MenuItem

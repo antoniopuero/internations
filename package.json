@@ -65,10 +65,10 @@
   "scripts": {
     "start": "node ./scripts/start.js",
     "build": "node ./scripts/build.js",
-    "deploy": "NODE_ENV=production npm run build && ./deploy.sh"
+    "deploy": "NODE_ENV=production npm run build && surge -p build -d antoniopuero.surge.sh"
   },
   "eslintConfig": {
     "extends": "./config/eslint.js"
   },
-  "homepage": "http://antoniopuero.github.io/internations"
+  "homepage": "http://antoniopuero.surge.sh/"
 }
