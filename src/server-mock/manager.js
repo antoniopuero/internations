@@ -9,6 +9,7 @@ let relations = _.cloneDeep(initialRelations);
 
 const usersUrl = '/api/users';
 const groupsUrl = '/api/groups';
+const paramRegex = '([^\/]+?)';
 
 class BadRequest extends Error {
   constructor (message) {
@@ -55,7 +56,7 @@ defineRoute(`${usersUrl}/create`, (data) => {
   return newUser;
 });
 
-defineRoute(`${usersUrl}/(.+?)/group/(.+?)/add`, (data, params) => {
+defineRoute(`${usersUrl}/${paramRegex}/group/${paramRegex}/add`, (data, params) => {
   const userId = params[1], groupId = params[2];
   const existingRelationIndex = _.findIndex(relations, {userId, groupId});
 
@@ -74,7 +75,7 @@ defineRoute(`${usersUrl}/(.+?)/group/(.+?)/add`, (data, params) => {
   return {};
 });
 
-defineRoute(`${usersUrl}/(.+?)/group/(.+?)/delete`, (data, params) => {
+defineRoute(`${usersUrl}/${paramRegex}/group/${paramRegex}/delete`, (data, params) => {
   const userId = params[1], groupId = params[2];
   const existingRelationIndex = _.findIndex(relations, {userId, groupId});
 
@@ -88,7 +89,7 @@ defineRoute(`${usersUrl}/(.+?)/group/(.+?)/delete`, (data, params) => {
   return {};
 });
 
-defineRoute(`${usersUrl}/(.+?)/groups`, (data, params) => {
+defineRoute(`${usersUrl}/${paramRegex}/groups`, (data, params) => {
   const userId = params[1];
   const existingRelations = _.find(relations, {userId});
 
@@ -97,7 +98,7 @@ defineRoute(`${usersUrl}/(.+?)/groups`, (data, params) => {
   });
 });
 
-defineRoute(`${usersUrl}/(.+?)/update`, (data, params) => {
+defineRoute(`${usersUrl}/${paramRegex}/update`, (data, params) => {
   const id = params[1];
   const userIndex = _.findIndex(users, {id});
 
@@ -114,7 +115,7 @@ defineRoute(`${usersUrl}/(.+?)/update`, (data, params) => {
 
 });
 
-defineRoute(`${usersUrl}/(.+?)/delete`, (data, params) => {
+defineRoute(`${usersUrl}/${paramRegex}/delete`, (data, params) => {
   const id = params[1];
   const userIndex = _.findIndex(users, {id});
   const userToDelete = users[userIndex];
@@ -132,7 +133,7 @@ defineRoute(`${usersUrl}/(.+?)/delete`, (data, params) => {
 
 });
 
-defineRoute(`${usersUrl}/(.+?)`, (data, params) => {
+defineRoute(`${usersUrl}/${paramRegex}`, (data, params) => {
   const id = params[1];
   const userIndex = _.findIndex(users, {id});
 
@@ -157,7 +158,7 @@ defineRoute(`${groupsUrl}/create`, (data) => {
   return newGroup;
 });
 
-defineRoute(`${groupsUrl}/(.+?)/update`, (data, params) => {
+defineRoute(`${groupsUrl}/${paramRegex}/update`, (data, params) => {
   const id = params[1];
   const groupIndex = _.findIndex(groups, {id});
 
@@ -173,7 +174,7 @@ defineRoute(`${groupsUrl}/(.+?)/update`, (data, params) => {
   return groups[groupIndex];
 });
 
-defineRoute(`${groupsUrl}/(.+?)/delete`, (data, params) => {
+defineRoute(`${groupsUrl}/${paramRegex}/delete`, (data, params) => {
   const id = params[1];
   const groupIndex = _.findIndex(groups, {id});
   const groupToDelete = groups[groupIndex];
@@ -192,7 +193,7 @@ defineRoute(`${groupsUrl}/(.+?)/delete`, (data, params) => {
   return groupToDelete;
 });
 
-defineRoute(`${groupsUrl}/(.+?)/users`, (data, params) => {
+defineRoute(`${groupsUrl}/${paramRegex}/users`, (data, params) => {
   const id = params[1];
   const groupIndex = _.findIndex(groups, {id});
   const existingRelations = _.find(relations, {groupId: id});
@@ -206,7 +207,7 @@ defineRoute(`${groupsUrl}/(.+?)/users`, (data, params) => {
   });
 });
 
-defineRoute(`${groupsUrl}/(.+?)`, (data, params) => {
+defineRoute(`${groupsUrl}/${paramRegex}`, (data, params) => {
   const id = params[1];
   const groupIndex = _.findIndex(groups, {id});
 

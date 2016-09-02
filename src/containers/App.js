@@ -32,7 +32,12 @@ class App extends Component {
         />
         <Drawer
           open={this.state.showLeftNav}
+          onRequestChange={(showLeftNav) => this.setState({showLeftNav})}
+          docked={false}
         >
+          <AppBar
+            showMenuIconButton={false}
+          />
           <MenuItem
             onTouchTap={this.handleClose.bind(this)}
             containerElement={<Link to="/users" />}

@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Route, Redirect } from 'react-router';
+import {Route} from 'react-router';
 import App from './containers/App';
 import Users from './containers/Users';
 import User from './containers/User';
@@ -14,7 +14,6 @@ import store from './store/configureStore';
 
 let routes = (
   <Route path="/" component={App}>
-    <Redirect from="/" to="users"/>
     <Route path="users" component={Users}/>
     <Route path="user">
       <Route path=":id" component={User}/>
@@ -31,8 +30,8 @@ let routes = (
   </Route>
 );
 
-function patchRoutes(route, store) {
-  const { props: { component, children } } = route;
+function patchRoutes (route, store) {
+  const {props: {component, children}} = route;
 
   return {
     ...route,
