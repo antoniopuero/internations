@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import {getUsers, getUser} from '../api/user';
 import {connect} from 'react-redux';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
-
-
-console.log(getUsers(), getUser('uniqueUserId1'));
 
 class App extends Component {
 
@@ -16,7 +12,6 @@ class App extends Component {
   };
 
   static onEnter(store, nextState, replaceState, callback) {
-    console.log('here');
     callback();
   }
 
@@ -29,7 +24,6 @@ class App extends Component {
   }
 
   render() {
-    const {history: {pushState}} = this.props;
     return (
       <div className="App">
         <AppBar
@@ -44,7 +38,14 @@ class App extends Component {
             containerElement={<Link to="/users" />}
             primaryText="Users"
           />
+          <MenuItem
+            onTouchTap={this.handleClose.bind(this)}
+            containerElement={<Link to="/groups" />}
+            primaryText="Groups"
+          />
         </Drawer>
+
+        <div>{this.props.children}</div>
       </div>
     );
   }
