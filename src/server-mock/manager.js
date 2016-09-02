@@ -24,6 +24,10 @@ class NotFound extends Error {
   }
 }
 
+function updateStorage (name, data) {
+  localStorage.setItem(name, JSON.stringify(data));
+}
+
 const routes = [() => {
   throw new NotFound('Not Found');
 }];
@@ -47,6 +51,7 @@ defineRoute(`${usersUrl}/create`, (data) => {
     ...data
   };
   users.push(newUser);
+  updateStorage('users', users);
   return newUser;
 });
 
@@ -64,6 +69,7 @@ defineRoute(`${usersUrl}/(.+?)/group/(.+?)/add`, (data, params) => {
   };
 
   relations.push(newRelation);
+  updateStorage('relations', relations);
 
   return {};
 });
@@ -77,6 +83,7 @@ defineRoute(`${usersUrl}/(.+?)/group/(.+?)/delete`, (data, params) => {
   }
 
   relations.splice(existingRelationIndex, 1);
+  updateStorage('relations', relations);
 
   return {};
 });
@@ -102,7 +109,7 @@ defineRoute(`${usersUrl}/(.+?)/update`, (data, params) => {
     ...users[userIndex],
     ..._.omit(data, 'id')
   };
-
+  updateStorage('users', users);
   return users[userIndex];
 
 });
@@ -117,9 +124,10 @@ defineRoute(`${usersUrl}/(.+?)/delete`, (data, params) => {
   }
 
   relations = _.filter(relations, (relation) => relation.userId !== id);
+  updateStorage('relations', relations);
 
   users.splice(userIndex, 1);
-
+  updateStorage('users', users);
   return userToDelete;
 
 });
@@ -145,6 +153,7 @@ defineRoute(`${groupsUrl}/create`, (data) => {
     ...data
   };
   groups.push(newGroup);
+  updateStorage('groups', groups);
   return newGroup;
 });
 
@@ -160,7 +169,7 @@ defineRoute(`${groupsUrl}/(.+?)/update`, (data, params) => {
     ...groups[groupIndex],
     ..._.omit(data, 'id')
   };
-
+  updateStorage('groups', groups);
   return groups[groupIndex];
 });
 
@@ -179,7 +188,7 @@ defineRoute(`${groupsUrl}/(.+?)/delete`, (data, params) => {
   }
 
   groups.splice(groupIndex, 1);
-
+  updateStorage('groups', groups);
   return groupToDelete;
 });
 

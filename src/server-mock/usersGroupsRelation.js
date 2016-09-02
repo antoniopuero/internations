@@ -1,4 +1,5 @@
-export default [{
+const relations = JSON.parse(localStorage.getItem('relations'));
+export default relations || [{
   id: 'uniqueRelationId1',
   userId: 'uniqueUserId1',
   groupId: 'uniqueGroupId1',

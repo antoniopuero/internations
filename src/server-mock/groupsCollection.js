@@ -1,4 +1,5 @@
-export default [{
+const groups = JSON.parse(localStorage.getItem('groups'));
+export default groups || [{
   name: 'friends',
   id: 'uniqueGroupId1'
 }, {
