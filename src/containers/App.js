@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import Snackbar from 'material-ui/Snackbar';
+import {red500} from 'material-ui/styles/colors';
 
 class App extends Component {
 
@@ -15,20 +17,21 @@ class App extends Component {
     callback();
   }
 
-  handleToggle () {
+  drawerToggle () {
     this.setState({showLeftNav: !this.state.showLeftNav});
   }
 
-  handleClose () {
+  drawerClose () {
     this.setState({showLeftNav: false});
   }
 
   render() {
+    const {globalError} = this.props;
     return (
       <div className="App">
         <AppBar
           title="Internations CRM"
-          onLeftIconButtonTouchTap={this.handleToggle.bind(this)}
+          onLeftIconButtonTouchTap={this.drawerToggle.bind(this)}
         />
         <Drawer
           open={this.state.showLeftNav}
@@ -39,16 +42,25 @@ class App extends Component {
             showMenuIconButton={false}
           />
           <MenuItem
-            onTouchTap={this.handleClose.bind(this)}
+            onTouchTap={this.drawerClose.bind(this)}
             containerElement={<Link to="/users" />}
             primaryText="Users"
           />
           <MenuItem
-            onTouchTap={this.handleClose.bind(this)}
+            onTouchTap={this.drawerClose.bind(this)}
             containerElement={<Link to="/groups" />}
             primaryText="Groups"
           />
         </Drawer>
+
+        <Snackbar
+          open={!!globalError.message}
+          bodyStyle={{
+            backgroundColor: red500
+          }}
+          message={globalError.message || ''}
+          autoHideDuration={4000}
+        />
 
         <div>{this.props.children}</div>
       </div>
@@ -56,4 +68,7 @@ class App extends Component {
   }
 }
 
-export default connect((store) => store, {})(App);
+export default connect((store) => {
+  const {globalError} = store;
+  return {globalError};
+}, {})(App);

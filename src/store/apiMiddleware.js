@@ -36,7 +36,7 @@ export default () => dispatch => async action => {
     dispatch(actionWith({ type: successType, ...dataToDispatch, value }));
     return value;
   } catch (e) {
-    console.log(e);
+    dispatch({type: 'GLOBAL_ERROR', error: e.message});
     return dispatch(actionWith({ type: failureType, error: e.message, ...dataToDispatch }));
   }
 
