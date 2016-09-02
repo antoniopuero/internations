@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import {getUsers} from './api/user';
+import {getUsers, getUser} from './api/user';
+import {connect} from 'react-redux';
 
+
+console.log(getUsers(), getUser('uniqueUserId1'));
 
 class App extends Component {
   render() {
-    console.log(getUsers());
     return (
       <div className="App">
       </div>
@@ -12,4 +14,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect((store) => store, {})(App);

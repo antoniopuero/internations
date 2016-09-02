@@ -10,11 +10,6 @@ let relations = _.cloneDeep(initialRelations);
 const usersUrl = '/api/users';
 const groupsUrl = '/api/groups';
 
-function match(url, regex) {
-  console.log(url, regex);
-  return url.match(new RegExp(_.escape(`^${regex}$`)));
-}
-
 class BadRequest extends Error {
   constructor (message) {
     super(message);
@@ -34,9 +29,10 @@ const routes = [() => {
 }];
 
 function defineRoute(routeRegex, callback) {
+  const finalRouteRegex = new RegExp(_.escape(`^${routeRegex}$`));
   const previousRouteIndex = routes.length - 1;
   routes.push((url, data) => {
-    const params = match(url, routeRegex);
+    const params = url.match(finalRouteRegex);
     if (params) {
       return callback(data, params);
     } else {
@@ -225,4 +221,4 @@ export default {
   post: retrieve,
   patch: retrieve,
   del: retrieve
-}
+};
