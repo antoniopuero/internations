@@ -1,3 +1,3 @@
-import manager from './manager';
+import serverMock from './serverMock';
 
-export default manager;
+export default serverMock;
