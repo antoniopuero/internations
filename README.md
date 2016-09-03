@@ -2,6 +2,9 @@
 
 The project has been deployed to [surge](http://antoniopuero.surge.sh)
 
+* To start it locally clone the repo and run `npm start` from the cli.
+* To build it locally and deploy run `npm run deploy`
+
 ## Expected api
 
 The back end simulation is located in the `./src/server-mock`
