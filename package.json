@@ -65,7 +65,7 @@
   "scripts": {
     "start": "node ./scripts/start.js",
     "build": "node ./scripts/build.js",
-    "deploy": "NODE_ENV=production npm run build && surge -p build -d antoniopuero.surge.sh"
+    "deploy": "NODE_ENV=production npm run build && surge -p build -antoniopuero.surge.sh"
   },
   "eslintConfig": {
     "extends": "./config/eslint.js"

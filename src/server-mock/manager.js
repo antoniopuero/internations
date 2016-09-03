@@ -46,13 +46,40 @@ function defineRoute(routeRegex, callback) {
   });
 }
 
+defineRoute(`${usersUrl}/${paramRegex}`, (data, params) => {
+  const id = params[1];
+  const userIndex = _.findIndex(users, {id});
+  const existingRelations = _.filter(relations, {userId: id});
+
+  if (userIndex < 0) {
+    throw new BadRequest('no such user');
+  }
+
+  const userGroups =  _.filter(groups, (group) => {
+    return _.findIndex(existingRelations, {groupId: group.id}) !== -1;
+  });
+
+  return {
+    ...users[userIndex],
+    groups: userGroups
+  };
+});
+
 defineRoute(`${usersUrl}/create`, (data) => {
   const newUser = {
-    id: _.uniqueId('user'),
-    ...data
+    id: _.uniqueId(`user${Date.now()}`),
+    registered: (new Date),
+    ..._.omit(data, ['groupId', 'id'])
   };
   users.push(newUser);
   updateStorage('users', users);
+  const newRelation = {
+    id: _.uniqueId(`relation${Date.now()}`),
+    userId: newUser.id,
+    groupId: data.groupId
+  };
+  relations.push(newRelation);
+  updateStorage('relations', relations);
   return newUser;
 });
 
@@ -64,7 +91,7 @@ defineRoute(`${usersUrl}/${paramRegex}/group/${paramRegex}/add`, (data, params) 
     throw new BadRequest('User already exists in this group');
   }
   const newRelation = {
-    id: _.uniqueId('relation'),
+    id: _.uniqueId(`relation${Date.now()}`),
     groupId,
     userId
   };
@@ -72,12 +99,17 @@ defineRoute(`${usersUrl}/${paramRegex}/group/${paramRegex}/add`, (data, params) 
   relations.push(newRelation);
   updateStorage('relations', relations);
 
-  return {};
+  return _.find(users, {id: userId});
 });
 
 defineRoute(`${usersUrl}/${paramRegex}/group/${paramRegex}/delete`, (data, params) => {
   const userId = params[1], groupId = params[2];
   const existingRelationIndex = _.findIndex(relations, {userId, groupId});
+  const userGroups = _.filter(relations, {userId});
+
+  if (userGroups.length === 1) {
+    throw new BadRequest('User should belong at least to one group');
+  }
 
   if (existingRelationIndex < 0) {
     throw new BadRequest('User doesn\'t exist in this group');
@@ -86,33 +118,7 @@ defineRoute(`${usersUrl}/${paramRegex}/group/${paramRegex}/delete`, (data, param
   relations.splice(existingRelationIndex, 1);
   updateStorage('relations', relations);
 
-  return {};
-});
-
-defineRoute(`${usersUrl}/${paramRegex}/groups`, (data, params) => {
-  const userId = params[1];
-  const existingRelations = _.find(relations, {userId});
-
-  return  _.filter(groups, (group) => {
-    return _.findIndex(existingRelations, {groupId: group.id}) !== 0;
-  });
-});
-
-defineRoute(`${usersUrl}/${paramRegex}/update`, (data, params) => {
-  const id = params[1];
-  const userIndex = _.findIndex(users, {id});
-
-  if (userIndex < 0) {
-    throw new BadRequest('no such user');
-  }
-
-  users[userIndex] = {
-    ...users[userIndex],
-    ..._.omit(data, 'id')
-  };
-  updateStorage('users', users);
-  return users[userIndex];
-
+  return {userId, groupId};
 });
 
 defineRoute(`${usersUrl}/${paramRegex}/delete`, (data, params) => {
@@ -133,52 +139,49 @@ defineRoute(`${usersUrl}/${paramRegex}/delete`, (data, params) => {
 
 });
 
-defineRoute(`${usersUrl}/${paramRegex}`, (data, params) => {
-  const id = params[1];
-  const userIndex = _.findIndex(users, {id});
-
-  if (userIndex < 0) {
-    throw new BadRequest('no such user');
-  }
-
-  return users[userIndex];
-});
-
 defineRoute(usersUrl, () => {
   return users;
 });
 
+
+defineRoute(`${groupsUrl}/${paramRegex}`, (data, params) => {
+  const id = params[1];
+  const groupIndex = _.findIndex(groups, {id});
+  const existingRelations = _.filter(relations, {groupId: id});
+
+  if (groupIndex < 0) {
+    throw new BadRequest('no such group');
+  }
+
+  const groupUsers =  _.filter(users, (user) => {
+    return _.findIndex(existingRelations, {userId: user.id}) !== -1;
+  });
+
+  return {
+    ...groups[groupIndex],
+    users: groupUsers
+  };
+});
+
 defineRoute(`${groupsUrl}/create`, (data) => {
+
+  if (_.findIndex(groups, {name: data.name}) !== -1) {
+    throw BadRequest('such group already exists');
+  }
   const newGroup = {
-    id: _.uniqueId('group'),
-    ...data
+    id: _.uniqueId(`group${Date.now()}`),
+    ..._.omit(data, 'id')
   };
   groups.push(newGroup);
   updateStorage('groups', groups);
   return newGroup;
 });
 
-defineRoute(`${groupsUrl}/${paramRegex}/update`, (data, params) => {
-  const id = params[1];
-  const groupIndex = _.findIndex(groups, {id});
-
-  if (groupIndex < 0) {
-    throw new BadRequest('no such group');
-  }
-
-  groups[groupIndex] = {
-    ...groups[groupIndex],
-    ..._.omit(data, 'id')
-  };
-  updateStorage('groups', groups);
-  return groups[groupIndex];
-});
-
 defineRoute(`${groupsUrl}/${paramRegex}/delete`, (data, params) => {
   const id = params[1];
   const groupIndex = _.findIndex(groups, {id});
   const groupToDelete = groups[groupIndex];
-  const groupRelation = _.find(relations, {groupId: id});
+  const groupRelation = _.filter(relations, {groupId: id});
 
   if (groupIndex < 0) {
     throw new BadRequest('no such group');
@@ -191,31 +194,6 @@ defineRoute(`${groupsUrl}/${paramRegex}/delete`, (data, params) => {
   groups.splice(groupIndex, 1);
   updateStorage('groups', groups);
   return groupToDelete;
-});
-
-defineRoute(`${groupsUrl}/${paramRegex}/users`, (data, params) => {
-  const id = params[1];
-  const groupIndex = _.findIndex(groups, {id});
-  const existingRelations = _.find(relations, {groupId: id});
-
-  if (groupIndex < 0) {
-    throw new BadRequest('no such group');
-  }
-
-  return _.filter(users, (user) => {
-    return _.findIndex(existingRelations, {userId: user.id}) !== 0;
-  });
-});
-
-defineRoute(`${groupsUrl}/${paramRegex}`, (data, params) => {
-  const id = params[1];
-  const groupIndex = _.findIndex(groups, {id});
-
-  if (groupIndex < 0) {
-    throw new BadRequest('no such group');
-  }
-
-  return groups[groupIndex];
 });
 
 defineRoute(groupsUrl, () => {

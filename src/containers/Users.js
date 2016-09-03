@@ -6,6 +6,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 
 
@@ -51,6 +53,17 @@ class Users extends Component {
     return (
       <div>
 
+        <FloatingActionButton
+          containerElement={<Link to={'/user/create'}/>}
+          style={{
+            position: 'fixed',
+            bottom: '30px',
+            right: '20px'
+          }}
+        >
+          <ContentAdd />
+        </FloatingActionButton>
+
         <Table>
           <TableHeader
             displaySelectAll={false}
@@ -71,7 +84,7 @@ class Users extends Component {
               return (
                 <TableRow key={user.id}>
                   <TableRowColumn>{user.id}</TableRowColumn>
-                  <TableRowColumn>{user.name.first} {user.name.last}</TableRowColumn>
+                  <TableRowColumn>{user.firstName} {user.lastName}</TableRowColumn>
                   <TableRowColumn>{user.email}</TableRowColumn>
                   <TableRowColumn>
                     <RaisedButton

@@ -5,7 +5,7 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
-import {red500} from 'material-ui/styles/colors';
+import {red600} from 'material-ui/styles/colors';
 
 class App extends Component {
 
@@ -56,8 +56,9 @@ class App extends Component {
         <Snackbar
           open={!!globalError.message}
           bodyStyle={{
-            backgroundColor: red500
+            backgroundColor: red600
           }}
+          onRequestClose={this.props.clearGlobalError}
           message={globalError.message || ''}
           autoHideDuration={4000}
         />
@@ -71,4 +72,11 @@ class App extends Component {
 export default connect((store) => {
   const {globalError} = store;
   return {globalError};
-}, {})(App);
+}, {
+  clearGlobalError () {
+    return {
+      type: 'GLOBAL_ERROR',
+      message: ''
+    };
+  }
+})(App);

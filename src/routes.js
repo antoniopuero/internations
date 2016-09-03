@@ -16,13 +16,13 @@ let routes = (
   <Route path="/" component={App}>
     <Route path="users" component={Users}/>
     <Route path="user">
-      <Route path=":id" component={User}/>
       <Route path="create" component={CreateUser}/>
+      <Route path=":id" component={User}/>
     </Route>
     <Route path="groups" component={Groups}/>
     <Route path="group">
-      <Route path=":id" component={Group}/>
       <Route path="create" component={CreateGroup}/>
+      <Route path=":id" component={Group}/>
     </Route>
 
     <Route path="*" component={NotFound}/>

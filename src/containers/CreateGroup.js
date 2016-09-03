@@ -1,30 +1,55 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
-import {getUsers} from '../reducers/users';
+import {
+  changeGroupToCreate,
+  changeGroupToCreateError,
+  createGroup
+} from '../reducers/groups';
+import Form from '../components/Form/Form';
 import {connect} from 'react-redux';
 
-
-
-class Users extends Component {
+class CreateGroup extends Component {
 
   static onEnter(store, nextState, replaceState, callback) {
-    store.dispatch(getUsers());
     callback();
   }
 
   render() {
-    const {users: {list}} = this.props;
+    const {props} = this;
+    const {groups: {groupToCreate}} = props;
 
-    console.log(list);
+    const fields = [{
+      label: 'Group name',
+      name: 'name',
+      rules: {
+        required: true,
+        maxLength: 40
+      }
+    }];
+
     return (
       <div>
-
+        <Form
+          onChange={props.changeGroupToCreate}
+          onError={props.changeGroupToCreateError}
+          onSubmit={props.createGroup}
+          fields={fields}
+          formData={groupToCreate.value}
+          formErrors={groupToCreate.errors}
+          formStatus={groupToCreate.createStatus}
+          navigateTo={`/group/${groupToCreate.value.id}`}
+          navigateToText="View group"
+          submitText="Create group"
+        />
       </div>
     );
   }
 }
 
 export default connect((store) => {
-  const {users} = store;
-  return {users};
-}, {})(Users);
+  const {groups} = store;
+  return {groups};
+}, {
+  changeGroupToCreate,
+  changeGroupToCreateError,
+  createGroup
+})(CreateGroup);
