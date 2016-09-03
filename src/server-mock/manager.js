@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import initialGroups from './groupsCollection';
 import initialUsers from './usersCollection';
 import initialRelations from './usersGroupsRelation';
@@ -68,7 +69,7 @@ defineRoute(`${usersUrl}/${paramRegex}`, (data, params) => {
 defineRoute(`${usersUrl}/create`, (data) => {
   const newUser = {
     id: _.uniqueId(`user${Date.now()}`),
-    registered: (new Date),
+    registered: moment().format('YYYY-MM-DD HH:mm:SS'),
     ..._.omit(data, ['groupId', 'id'])
   };
   users.push(newUser);

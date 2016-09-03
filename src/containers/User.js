@@ -29,6 +29,8 @@ class Users extends Component {
   render() {
     const {users: {user: {value: user}}, history: {pushState}} = this.props;
 
+    console.log(user);
+
     return (
       <div>
         <Paper
