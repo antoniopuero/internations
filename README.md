@@ -50,27 +50,6 @@ The back end simulation is located in the `./src/server-mock`
 }
 ```
 
-`GET '/api/users/:id'`
-
-```javascript
-{
-  firstName: 'geoff',
-  lastName: 'rose',
-  email: 'geoff.rose@example.com',
-  registered: '2013-09-02 12:19:55',
-  phone: '011-060-2892',
-  pictureUrl: 'https://randomuser.me/api/portraits/men/54.jpg',
-  id: 'uniqueUserId2'
-  groups: [{
-    name: 'friends',
-    id: 'uniqueGroupId1'
-  }, {
-    name: 'beauties',
-    id: 'uniqueGroupId2'
-  }]
-}
-```
-
 `POST '/api/users/create'`
 
 ```javascript
@@ -160,7 +139,7 @@ Delete a user from the group
 }
 ```
 
-`POST '/api/groups/:id/delete'
+`POST '/api/groups/:id/delete'`
 
 ```javascript
 {
@@ -169,7 +148,7 @@ Delete a user from the group
 }
 ````
 
-`POST '/api/groups/create'
+`POST '/api/groups/create'`
 
 ```javascript
 {
