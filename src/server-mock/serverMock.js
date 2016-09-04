@@ -67,6 +67,10 @@ defineRoute(`${usersUrl}/${paramRegex}`, (data, params) => {
 });
 
 defineRoute(`${usersUrl}/create`, (data) => {
+  const sameEmailUserIndex = _.findIndex(users, {email: data.email});
+  if (sameEmailUserIndex !== -1) {
+    throw BadRequest('User with such email already exists');
+  }
   const newUser = {
     id: _.uniqueId(`user${Date.now()}`),
     registered: moment().format('YYYY-MM-DD HH:mm:SS'),

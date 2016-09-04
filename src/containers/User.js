@@ -29,8 +29,6 @@ class Users extends Component {
   render() {
     const {users: {user: {value: user}}, history: {pushState}} = this.props;
 
-    console.log(user);
-
     return (
       <div>
         <Paper
@@ -44,6 +42,9 @@ class Users extends Component {
               leftAvatar={<Avatar src={user.pictureUrl} />}
             >
               {user.firstName} {user.lastName}
+            </ListItem>
+            <ListItem>
+              ID: {user.id}
             </ListItem>
             <ListItem>
               Email: {user.email}

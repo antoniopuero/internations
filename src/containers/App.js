@@ -56,7 +56,9 @@ class App extends Component {
         <Snackbar
           open={!!globalError.message}
           bodyStyle={{
-            backgroundColor: red600
+            backgroundColor: red600,
+            height: 'inherit',
+            textAlign: 'center'
           }}
           onRequestClose={this.props.clearGlobalError}
           message={globalError.message || ''}

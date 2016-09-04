@@ -1,19 +1,24 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
+import React, {Component} from 'react';
+import {Link} from 'react-router';
 import {getUsers, removeUser} from '../reducers/users';
 import {connect} from 'react-redux';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-
+import {List, ListItem} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import Avatar from 'material-ui/Avatar';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
 
 
 class Users extends Component {
 
-  static async onEnter(store, nextState, replaceState, callback) {
+  static async onEnter (store, nextState, replaceState, callback) {
     await store.dispatch(getUsers());
     callback();
   }
@@ -30,8 +35,25 @@ class Users extends Component {
     this.setState({showRemoveWarning: false, userToDeleteId: null});
   }
 
-  render() {
+  render () {
     const {users: {list}} = this.props;
+
+    const rightIconMenu = (user) => (
+      <IconMenu
+        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+      >
+        <MenuItem
+          containerElement={<Link to={`/user/${user.id}`}/>}
+        >
+          View
+        </MenuItem>
+        <MenuItem
+          onTouchTap={this.openRemoveWarning.bind(this, user.id)}
+        >
+          Delete
+        </MenuItem>
+      </IconMenu>
+    );
 
 
     const actions = [
@@ -48,64 +70,45 @@ class Users extends Component {
           this.closeRemoveWarning();
         }}
       />
-      ];
+    ];
 
     return (
       <div>
+
+        <List>
+          <Subheader>Users</Subheader>
+
+          {list.value.map((user) => {
+            return (
+              <div key={user.id}>
+                <ListItem
+                  leftAvatar={<Avatar src={user.pictureUrl}/>}
+                  primaryText={`${user.firstName} ${user.lastName}`}
+                  secondaryText={
+                    <p>
+                      Email: {user.email}; Phone: {user.phone}
+                    </p>
+                  }
+                  secondaryTextLines={1}
+                  rightIconButton={rightIconMenu(user)}
+                />
+                <Divider/>
+              </div>
+            );
+          })}
+        </List>
+
 
         <FloatingActionButton
           containerElement={<Link to={'/user/create'}/>}
           style={{
             position: 'fixed',
-            bottom: '30px',
+            bottom: '20px',
             right: '20px'
           }}
         >
           <ContentAdd />
         </FloatingActionButton>
-
-        <Table>
-          <TableHeader
-            displaySelectAll={false}
-            adjustForCheckbox={false}
-          >
-            <TableRow>
-              <TableHeaderColumn>ID</TableHeaderColumn>
-              <TableHeaderColumn>Name</TableHeaderColumn>
-              <TableHeaderColumn>Email</TableHeaderColumn>
-              <TableHeaderColumn>View details</TableHeaderColumn>
-              <TableHeaderColumn>Remove</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody
-            displayRowCheckbox={false}
-          >
-            {list.value.map((user) => {
-              return (
-                <TableRow key={user.id}>
-                  <TableRowColumn>{user.id}</TableRowColumn>
-                  <TableRowColumn>{user.firstName} {user.lastName}</TableRowColumn>
-                  <TableRowColumn>{user.email}</TableRowColumn>
-                  <TableRowColumn>
-                    <RaisedButton
-                      label="View"
-                      primary
-                      containerElement={<Link to={`/user/${user.id}`}>view</Link>}
-                    />
-                  </TableRowColumn>
-                  <TableRowColumn>
-                    <RaisedButton
-                      label="Remove"
-                      secondary
-                      onTouchTap={this.openRemoveWarning.bind(this, user.id)}
-                    />
-                  </TableRowColumn>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-
 
         <Dialog
           title="Are you sure about deleting this user?"
@@ -115,7 +118,7 @@ class Users extends Component {
           onRequestClose={this.closeRemoveWarning.bind(this)}
         />
 
-        </div>
+      </div>
     );
   }
 }

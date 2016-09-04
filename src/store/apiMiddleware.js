@@ -36,7 +36,10 @@ export default () => dispatch => async action => {
     dispatch(actionWith({ type: successType, ...dataToDispatch, value }));
     return value;
   } catch (e) {
-    dispatch({type: 'GLOBAL_ERROR', error: e.message});
+    dispatch({type: 'GLOBAL_ERROR', error: ''});
+    setTimeout(() => {
+      dispatch({type: 'GLOBAL_ERROR', error: e.message});
+    }, 100);
     return dispatch(actionWith({ type: failureType, error: e.message, ...dataToDispatch }));
   }
 
