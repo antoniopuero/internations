@@ -8,21 +8,13 @@ import {
 } from '../reducers/groups';
 import {getUsers, removeUserFromGroup} from '../reducers/users';
 import _ from 'lodash';
-import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Form from '../components/Form/Form';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
+import List from '../components/List/List';
+import AddButton from '../components/AddButton/AddButton';
 
 class Group extends Component {
 
@@ -61,25 +53,6 @@ class Group extends Component {
       }
     }];
 
-    const rightIconMenu = (user) => (
-      <IconMenu
-        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
-      >
-        <MenuItem
-          containerElement={<Link to={`/user/${user.id}`}/>}
-        >
-          View
-        </MenuItem>
-        <MenuItem
-          onTouchTap={() => {
-            this.props.removeUserFromGroup(user.id, group.id);
-          }}
-        >
-          Delete from group
-        </MenuItem>
-      </IconMenu>
-    );
-
     const actions = [
       <FlatButton
         label="Cancel"
@@ -90,39 +63,26 @@ class Group extends Component {
 
     return (
       <div>
-        <List>
-          <Subheader>{group.name} users</Subheader>
 
-          {group.users.map((user) => {
-            return (
-              <div key={user.id}>
-                <ListItem
-                  leftAvatar={<Avatar src={user.pictureUrl}/>}
-                  primaryText={`${user.firstName} ${user.lastName}`}
-                  secondaryText={
-                    <p>
-                      Email: {user.email}; Phone: {user.phone}
-                    </p>
-                  }
-                  secondaryTextLines={1}
-                  rightIconButton={rightIconMenu(user)}
-                />
-                <Divider/>
-              </div>
-            );
-          })}
-        </List>
-
-        <FloatingActionButton
-          onTouchTap={this.openAddForm.bind(this)}
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px'
+        <List
+          headerText={`${group.name} users`}
+          items={group.users}
+          menuItemProps={{
+            leftAvatar: (user) => <Avatar src={user.pictureUrl}/>,
+            primaryText: (user) => `${user.firstName} ${user.lastName}`,
+            secondaryText: (user) => <p>Email: {user.email}; Phone: {user.phone}</p>,
+            secondaryTextLines: 1
           }}
-        >
-          <ContentAdd />
-        </FloatingActionButton>
+          baseLink="/user"
+          removeText="Delete user from group"
+          onDelete={(id) => {
+            this.props.removeUserFromGroup(id, group.id);
+          }}
+        />
+
+        <AddButton
+          onAdd={this.openAddForm.bind(this)}
+        />
 
 
         <Dialog

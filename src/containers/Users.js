@@ -1,19 +1,11 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router';
 import {getUsers, removeUser} from '../reducers/users';
 import {connect} from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
+import List from '../components/List/List';
+import AddButton from '../components/AddButton/AddButton';
 
 
 class Users extends Component {
@@ -38,23 +30,6 @@ class Users extends Component {
   render () {
     const {users: {list}} = this.props;
 
-    const rightIconMenu = (user) => (
-      <IconMenu
-        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
-      >
-        <MenuItem
-          containerElement={<Link to={`/user/${user.id}`}/>}
-        >
-          View
-        </MenuItem>
-        <MenuItem
-          onTouchTap={this.openRemoveWarning.bind(this, user.id)}
-        >
-          Delete
-        </MenuItem>
-      </IconMenu>
-    );
-
 
     const actions = [
       <FlatButton
@@ -75,40 +50,22 @@ class Users extends Component {
     return (
       <div>
 
-        <List>
-          <Subheader>Users</Subheader>
-
-          {list.value.map((user) => {
-            return (
-              <div key={user.id}>
-                <ListItem
-                  leftAvatar={<Avatar src={user.pictureUrl}/>}
-                  primaryText={`${user.firstName} ${user.lastName}`}
-                  secondaryText={
-                    <p>
-                      Email: {user.email}; Phone: {user.phone}
-                    </p>
-                  }
-                  secondaryTextLines={1}
-                  rightIconButton={rightIconMenu(user)}
-                />
-                <Divider/>
-              </div>
-            );
-          })}
-        </List>
-
-
-        <FloatingActionButton
-          containerElement={<Link to={'/user/create'}/>}
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px'
+        <List
+          headerText={'Users'}
+          items={list.value}
+          menuItemProps={{
+            leftAvatar: (user) => <Avatar src={user.pictureUrl}/>,
+            primaryText: (user) => `${user.firstName} ${user.lastName}`,
+            secondaryText: (user) => <p>Email: {user.email}; Phone: {user.phone}</p>,
+            secondaryTextLines: 1
           }}
-        >
-          <ContentAdd />
-        </FloatingActionButton>
+          baseLink="/user"
+          onDelete={(id) => this.openRemoveWarning(id)}
+        />
+
+        <AddButton
+          navigateTo="/user/create"
+        />
 
         <Dialog
           title="Are you sure about deleting this user?"

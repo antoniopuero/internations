@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import {getGroups, removeGroup} from '../reducers/groups';
 import {connect} from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
+import AddButton from '../components/AddButton/AddButton';
+import List from '../components/List/List';
 
 
 
@@ -27,8 +19,7 @@ class Groups extends Component {
     showRemoveWarning: false
   };
 
-  openRemoveWarning (id, e) {
-    e.preventDefault();
+  openRemoveWarning (id) {
     this.setState({showRemoveWarning: true, groupToDeleteId: id});
   }
 
@@ -38,24 +29,6 @@ class Groups extends Component {
 
   render() {
     const {groups: {list}} = this.props;
-
-
-    const rightIconMenu = (group) => (
-      <IconMenu
-        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
-      >
-        <MenuItem
-          containerElement={<Link to={`/group/${group.id}`}/>}
-        >
-          View
-        </MenuItem>
-        <MenuItem
-          onTouchTap={this.openRemoveWarning.bind(this, group.id)}
-        >
-          Delete
-        </MenuItem>
-      </IconMenu>
-    );
 
     const actions = [
       <FlatButton
@@ -77,35 +50,21 @@ class Groups extends Component {
       <div>
 
 
-        <List>
-          <Subheader>Users</Subheader>
-
-          {list.value.map((group) => {
-            return (
-              <div key={group.id}>
-                <ListItem
-                  primaryText={group.name}
-                  secondaryText={<p>ID: {group.id}</p>}
-                  secondaryTextLines={1}
-                  rightIconButton={rightIconMenu(group)}
-                />
-                <Divider inset/>
-              </div>
-            );
-          })}
-        </List>
-
-
-        <FloatingActionButton
-          containerElement={<Link to={'/group/create'}/>}
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px'
+        <List
+          headerText={'Groups'}
+          items={list.value}
+          menuItemProps={{
+            primaryText: (group) => group.name,
+            secondaryText: (group) => <p>ID: {group.id}</p>,
+            secondaryTextLines: 1
           }}
-        >
-          <ContentAdd />
-        </FloatingActionButton>
+          baseLink="/group"
+          onDelete={(id) => this.openRemoveWarning(id)}
+        />
+
+        <AddButton
+          navigateTo="/group/create"
+        />
 
         <Dialog
           title="Are you sure about deleting this group?"
