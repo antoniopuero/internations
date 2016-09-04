@@ -81,7 +81,8 @@ class Group extends Component {
           }}
         />
 
-        {!!usersThatAreNotInTheGroup.length && <AddButton
+        {!!usersThatAreNotInTheGroup.length &&
+        <AddButton
           onAdd={this.openAddForm.bind(this)}
         />}
 
