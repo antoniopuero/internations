@@ -40,12 +40,13 @@ class Group extends Component {
 
   render () {
     const {groups: {group: {value: group}, userToAdd}, users: {list}} = this.props;
+    const usersThatAreNotInTheGroup = _.xorBy(group.users, list.value, 'id');
 
     const userToAddFields = [{
       inputType: 'select',
       name: 'userId',
       label: 'User to add',
-      options: _.map(_.xorBy(group.users, list.value, 'id'), (user) => {
+      options: _.map(usersThatAreNotInTheGroup, (user) => {
         return {name: `${user.firstName} ${user.lastName}`, value: user.id};
       }),
       rules: {
@@ -80,9 +81,9 @@ class Group extends Component {
           }}
         />
 
-        <AddButton
+        {!!usersThatAreNotInTheGroup.length && <AddButton
           onAdd={this.openAddForm.bind(this)}
-        />
+        />}
 
 
         <Dialog
